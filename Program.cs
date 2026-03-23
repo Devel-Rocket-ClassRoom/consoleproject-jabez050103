@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TicTacToe
 {
+    // 틱택토 클래스
     public class TicTacToe
     {
         char[,] board = {   { '1', '2', '3' },
