@@ -21,6 +21,7 @@ namespace DungeonGame
         {
             pr = map.FindPlayer().Item1;
             pc = map.FindPlayer().Item2;
+            cou = map.FindMonster();
             while (true)
             {
                 R = pr;
@@ -43,10 +44,24 @@ namespace DungeonGame
                 {
                     R = R + 1;
                 }
-                if (map.map[R, C] == '#')
 
+                if (map.map[R, C] == '#')
                 {
                     Console.WriteLine("이동이 불가능합니다");
+                }
+                else if (map.map[R, C] == 'M')
+                {
+                    cou--;
+                    Console.WriteLine("몬스터를 잡았습니다!");
+                    map.map[pr, pc] = ' ';
+                    pr = R;
+                    pc = C;
+                    map.map[pr, pc] = 'P';
+                    if (cou <= 0)
+                    {
+                        Console.WriteLine("게임종료");
+                        return;
+                    }
                 }
                 else
                 {
@@ -55,29 +70,15 @@ namespace DungeonGame
                     pc = C;
                     map.map[pr, pc] = 'P';
                 }
+
                 map.PrintMap();
             }
         }
         public class Monster : Character
         {
             public void CatchMonster(Map map)
-            {
-                cou = map.FindMonster();
+            {    
 
-                if (map.map[R, C] == 'M')
-                {
-                    cou--;
-                    Console.WriteLine("몬스터를 잡았습니다!");
-                    map.map[pr, pc] = ' ';
-                    pr = R;
-                    pc = C;
-                    map.map[pr, pc] = 'P';
-                }
-                if (cou <= 0)
-                {
-                    Console.WriteLine("게임종료");
-                    return;
-                }
 
             }
         }
