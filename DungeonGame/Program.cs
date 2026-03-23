@@ -7,7 +7,7 @@ using static DungeonGame.Player;
 
 namespace DungeonGame
 {
-    public class Charicter
+    public class Character
     {
         public int pr;
         public int pc;
@@ -15,7 +15,7 @@ namespace DungeonGame
         public int C;
         public int cou;
     }
-    public class Player : Charicter
+    public class Player : Character
     {
         public void MovePlayer(Map map)
         {
@@ -58,7 +58,7 @@ namespace DungeonGame
                 map.PrintMap();
             }
         }
-        public class Monster : Charicter
+        public class Monster : Character
         {
             public void CatchMonster(Map map)
             {
