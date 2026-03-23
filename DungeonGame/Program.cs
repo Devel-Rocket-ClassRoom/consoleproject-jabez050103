@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ConsoleApp3.Player;
+using static DungeonGame.Player;
 
-namespace ConsoleApp3
+namespace DungeonGame
 {
     public class Charicter
     {
