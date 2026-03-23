@@ -1,160 +1,171 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ConsoleApp3.Player;
 
-namespace TicTacToe
+namespace ConsoleApp3
 {
-    // 틱택토 클래스
-    public class TicTacToe
+    public class Charicter
     {
-        char[,] board = {   { '1', '2', '3' },
-                            { '4', '5', '6' },
-                            { '7', '8', '9' }
-                        };
-
-        char player1 = 'X';
-        char player2 = 'O';
-        char currentPlayer;
-
-        
-        public void PlayGame()
+        public int pr;
+        public int pc;
+        public int R;
+        public int C;
+        public int cou;
+    }
+    public class Player : Charicter
+    {
+        public void MovePlayer(Map map)
         {
-            int moves = 0;
-            bool winFlag = false;
-
-            currentPlayer = player1;
-
-            while (!winFlag && moves < 9)
+            pr = map.FindPlayer().Item1;
+            pc = map.FindPlayer().Item2;
+            while (true)
             {
-                PrintBoard();
-                Console.WriteLine($"플레이어 {currentPlayer}, 1~9를 입력하세요: ");
+                R = pr;
+                C = pc;
 
-                string input = Console.ReadLine();
-
-                int choice = Int32.Parse(input);
-
-                if ( choice >= 1 && choice <= 9)
+                string cmd = Console.ReadLine();
+                if (cmd == "L")
                 {
-                    if (SetMarker(choice))
-                    {
-                        winFlag = CheckWin();
+                    C = C - 1;
+                }
+                if (cmd == "R")
+                {
+                    C = C + 1;
+                }
+                if (cmd == "U")
+                {
+                    R = R - 1;
+                }
+                if (cmd == "D")
+                {
+                    R = R + 1;
+                }
+                if (map.map[R, C] == '#')
 
-                        if (!winFlag)
-                        {
-                            if(currentPlayer == player1)
-                            {
-                                currentPlayer = player2;
-                            }
-                            else
-                            {
-                                currentPlayer = player1;
-                            }
-                        }
-
-                        moves++;
-                    }
-                    else
-                    {
-                        Console.WriteLine("이미 선택된 칸입니다. 다른 값을 입력하세요.");
-                    }
+                {
+                    Console.WriteLine("이동이 불가능합니다");
                 }
                 else
                 {
-                    Console.WriteLine("잘못된 값입니다. 1~9 사이 숫자를 입력하세요.");
+                    map.map[pr, pc] = ' ';
+                    pr = R;
+                    pc = C;
+                    map.map[pr, pc] = 'P';
                 }
+                map.PrintMap();
             }
-
-            Console.Clear();
-            PrintBoard();
-
-            if (winFlag)
-                Console.WriteLine($"!!!!!! 플레이어 {currentPlayer} 승리 !!!!!!");
-            else
-                Console.WriteLine("무승부입니다!");
         }
-
-        void PrintBoard()
+        public class Monster : Charicter
         {
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine("틱택토 게임");
-            Console.WriteLine("-----------");
-
-            for (int i = 0; i < 3; i++)
+            public void CatchMonster(Map map)
             {
-                Console.WriteLine($" {board[i, 0]} | {board[i, 1]} | {board[i, 2]} ");
-                if (i < 2)
+                cou = map.FindMonster();
+
+                if (map.map[R, C] == 'M')
                 {
-                    Console.WriteLine("---|---|---");
+                    cou--;
+                    Console.WriteLine("몬스터를 잡았습니다!");
+                    map.map[pr, pc] = ' ';
+                    pr = R;
+                    pc = C;
+                    map.map[pr, pc] = 'P';
                 }
-            }
-
-            Console.WriteLine("-----------");
-        }
-
-        bool SetMarker(int choice)
-        {
-            int row = (choice - 1) / 3;
-            int col = (choice - 1) % 3;
-
-            if (board[row, col] != player1 && board[row, col] != player2)
-            {
-                board[row, col] = currentPlayer;
-                return true;
-            }
-            return false;
-        }
-
-        bool CheckWin()
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                if (board[i, 0] == currentPlayer && board[i, 1] == currentPlayer && board[i, 2] == currentPlayer)
+                if (cou <= 0)
                 {
-                    return true;
+                    Console.WriteLine("게임종료");
+                    return;
                 }
-            }
 
-            for (int i = 0; i < 3; i++)
+            }
+        }
+        public class Map
+        {
+            public char[,] map =     { { '#', '#', '#', '#', '#', '#', '#', '#', '#','#','#','#','#','#','#' },
+                                { '#', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ',' ',' ',' ',' ','#' },
+                                { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ',' ',' ',' ',' ','#' },
+                                { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ',' ',' ',' ',' ','#' },
+                                { '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ',' ',' ',' ',' ',' ','#' },
+                                { '#', ' ', ' ', '#', 'M', ' ', ' ', ' ', ' ',' ',' ',' ',' ',' ','#' },
+                                { '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ',' ',' ',' ',' ',' ','#' },
+                                { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ',' ',' ',' ',' ','#' },
+                                { '#', ' ', ' ', 'M', ' ', ' ', ' ', ' ', ' ',' ',' ',' ',' ','M','#' },
+                                { '#', '#', '#', '#', '#', '#', '#', '#', '#','#','#','#','#','#','#' } };
+            public void PrintMap()
             {
-                if (board[0, i] == currentPlayer && board[1, i] == currentPlayer && board[2, i] == currentPlayer)
+                int row = map.GetLength(0);
+                int col = map.GetLength(1);
+
+                for (int r = 0; r < row; r++)
                 {
-                    return true;
+                    for (int c = 0; c < col; c++)
+                    {
+                        Console.Write(map[r, c]);
+                    }
+                    Console.WriteLine();
                 }
-            }
 
-            if (board[0, 0] == currentPlayer && board[1, 1] == currentPlayer && board[2, 2] == currentPlayer)
+            }
+            public int FindMonster()
             {
-                return true;
+                int row = map.GetLength(0);
+                int col = map.GetLength(1);
+                int cou = 0;
+                for (int r = 0; r < row; r++)
+                {
+                    for (int c = 0; c < col; c++)
+                        if (map[r, c] == 'M')
+                        {
+                            cou++;
+                        }
+                }
+                return cou;
             }
-
-            if (board[0, 2] == currentPlayer && board[1, 1] == currentPlayer && board[2, 0] == currentPlayer)
+            public (int, int) FindPlayer()
             {
-                return true;
+                int row = map.GetLength(0);
+                int col = map.GetLength(1);
+                for (int r = 0; r < row; r++)
+                {
+                    for (int c = 0; c < col; c++)
+                    {
+                        if (map[r, c] == 'P')
+                        {
+                            return (r, c);
+                        }
+                    }
+                }
+
+                return (-1, -1);
             }
 
-            return false;
         }
 
-        protected TicTacToe(int r, int c)
+        public class DungeonGame
         {
 
         }
 
-        public TicTacToe()
-        {
 
-        }
     }
-
 
     internal class Program
     {
-        static void Main()
+
+        static void Main(string[] args)
         {
-            TicTacToe game = new TicTacToe();
-            game.PlayGame();
+
+            Map map = new Map();
+            map.PrintMap();
+            Player P = new Player();
+            P.MovePlayer(map);
+            Monster M = new Monster();
+            M.CatchMonster(map);
+
         }
+
     }
 }
